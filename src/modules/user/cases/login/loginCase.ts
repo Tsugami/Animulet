@@ -1,7 +1,7 @@
 import { Either, left, right } from 'fp-ts/lib/Either'
 import argon2 from 'argon2'
 
-import userRepository from '@user/repository/user/userRepository'
+import userService from '@user/services/user/userService'
 import { User } from '@user/models/user'
 import { LoginError } from './loginError'
 import { LoginDTO } from './loginDTO'
@@ -12,8 +12,8 @@ export const login = async ({
 }: LoginDTO): Promise<Either<LoginError, User>> => {
   // It only evaluates the first one if it finds it.
   const user =
-    (await userRepository.findByEmail(login)) ||
-    (await userRepository.findByUsername(login))
+    (await userService.findByEmail(login)) ||
+    (await userService.findByUsername(login))
 
   if (!user) return left({ kind: 'AccountNotExists' })
 
