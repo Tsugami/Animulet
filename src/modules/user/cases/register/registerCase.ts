@@ -19,7 +19,7 @@ export const register = async ({
 
   const hashedPassword = await argon2.hash(password)
 
-  const user = await userService.save({
+  const user = await userService.createUser({
     username,
     email,
     password: hashedPassword
