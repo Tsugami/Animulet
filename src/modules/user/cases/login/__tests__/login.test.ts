@@ -6,7 +6,7 @@ import { hash } from 'argon2'
 
 const server = app()
 
-beforeAll(async () =>
+beforeEach(async () =>
   prisma.user.create({
     data: {
       email: 'tests@hotmail.com',
@@ -39,6 +39,9 @@ describe('GET /login', () => {
 })
 
 afterAll(async () => {
-  await prisma.user.deleteMany()
   await prisma.$disconnect()
+})
+
+afterEach(async () => {
+  await prisma.user.deleteMany()
 })

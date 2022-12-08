@@ -1,16 +1,16 @@
-import { Either, isLeft, left, right } from 'fp-ts/lib/Either'
+import * as TE from 'fp-ts/lib/TaskEither'
+import * as E from 'fp-ts/lib/Either'
 import * as yup from 'yup'
 
-import { validateBody } from '@utils/validate'
-import { RegisterError } from './registerError'
+import { InputValidationError } from '@user/models/common'
 
-export interface RegisterDTO {
+export interface CreateUserInputDto {
   username: string
   email: string
   password: string
 }
 
-const schema: yup.SchemaOf<RegisterDTO> = yup
+const schema: yup.SchemaOf<CreateUserInputDto> = yup
   .object()
   .shape({
     username: yup.string().required().max(128),
@@ -19,12 +19,10 @@ const schema: yup.SchemaOf<RegisterDTO> = yup
   })
   .defined()
 
-export const validateRegisterDTO = async (
-  obj: Object
-): Promise<Either<RegisterError, RegisterDTO>> => {
-  const dto = await validateBody(obj, schema)
-  if (isLeft(dto)) {
-    return left({ kind: 'RegisterValidationError', data: dto.left.message })
-  }
-  return right(dto.right as RegisterDTO)
-}
+export const validate = (
+  input: Partial<CreateUserInputDto>
+): TE.TaskEither<InputValidationError, CreateUserInputDto> =>
+  TE.tryCatch(
+    async () => (await schema.validate(input)) as CreateUserInputDto,
+    InputValidationError.of
+  )

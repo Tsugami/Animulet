@@ -1,9 +1,3 @@
-export interface User {
-  id?: string
-  username: string
-  password: string
-  email: string
-  description?: string | null
-  birthDate?: Date | null
-  createdAt?: Date
-}
+import type { Prisma, User as PrismaUser } from '@prisma/client'
+export type User = PrismaUser
+export type CreateUserInputDto = Prisma.UserUncheckedCreateInput
